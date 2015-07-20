@@ -1,0 +1,22 @@
+body {
+  background:rgb(81, 175, 241);
+}
+
+.posts{
+  border:2px solid #0648B1;
+  border-radius: 5px;
+  background:#518FF1;
+  color:#FFE475;
+  padding: 20px;
+  margin:10px 0;
+}
+
+#post-form{
+  text-align: center;
+}
+
+.post-input{
+    width:50%;
+    margin:5px auto;
+    display:block;
+}
