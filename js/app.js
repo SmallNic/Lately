@@ -31,11 +31,11 @@ app.config([
 app.factory('posts', [function(){
   var obj = {
     posts: [
-      {title: 'post 1', upvotes: 1},
-      {title: 'post 2', upvotes: 2},
-      {title: 'post 3', upvotes: 3},
-      {title: 'post 4', upvotes: 4},
-      {title: 'post 5', upvotes: 5}
+      {title: 'post 1', upvotes: 1, comments:[]},
+      {title: 'post 2', upvotes: 2, comments:[]},
+      {title: 'post 3', upvotes: 3, comments:[]},
+      {title: 'post 4', upvotes: 4, comments:[]},
+      {title: 'post 5', upvotes: 5, comments:[]}
     ]
   };
   return obj
@@ -49,9 +49,16 @@ app.controller('PostsCtrl', [
     $scope.post = posts.posts[$stateParams.id]
     $scope.incrementUpvotes = function(comment){
       comment.upvotes++
-
     }
-
+    $scope.addComment = function(){
+      if($scope.body === '') {return}
+      $scope.post.comments.push({
+        body: $scope.body,
+        author: 'user',
+        upvotes: 0
+      });
+      $scope.body = '';
+    }
   }
 ])
 
