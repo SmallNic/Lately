@@ -1,0 +1,49 @@
+body {
+  background:rgb(81, 175, 241);
+  font-family:Verdana, sans-serif;
+  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+#page-title{
+  color:white;
+  font-family:Tahoma;
+  text-shadow: 1px 1px 1px black;
+  font-size:1.5em;
+  margin-bottom:20px;
+}
+
+#page-title h1 {
+  margin:0;
+  padding:0;
+}
+
+.upvote img{
+  width:25px;
+  display:inline-block;
+}
+
+.posts{
+  border:2px solid #0648B1;
+  border-radius: 5px;
+  background:#518FF1;
+  color:#FFE475;
+  padding: 20px 0 20px 10px;
+  margin:10px 0;
+}
+
+#post-form{
+  text-align: center;
+  border: 1px dashed navy;
+  width:50%;
+  margin:20px auto;
+  padding:10px;
+}
+
+.post-input{
+    width:100%;
+    padding:0;
+    height:25px;
+    margin:5px auto;
+    display:block;
+    font-size:1.0em;
+}
