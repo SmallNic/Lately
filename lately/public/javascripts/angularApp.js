@@ -14,13 +14,24 @@ app.config([
       .state('home',{
         url: '/home',
         templateUrl: '/home.html',
-        controller: 'MainCtrl'
+        controller: 'MainCtrl',
+        resolve: {
+          postPromise: ['posts', function (posts) {
+            //what does the above 'posts' refer to? the service?
+            return posts.getAll();
+          }]
+        }
       })
 
       .state('posts', {
         url: '/posts/{id}',  //'id' is actually a route parameter that will be made available to our controller.
         templateUrl: '/posts.html',
-        controller: 'PostsCtrl'
+        controller: 'PostsCtrl',
+        resolve: {
+          post: ['$stateParams', 'posts', function($stateParams, posts){
+            return posts.getOne($stateParams.id)
+          }]
+        }
       })
 
     $urlRouterProvider.otherwise('home')
@@ -28,7 +39,7 @@ app.config([
 ])
 
 
-app.factory('posts', [function(){
+app.factory('posts', ['$http', function($http){
   var obj = {
     posts: [
       {title: 'post 1', upvotes: 1, comments:[]},
@@ -38,24 +49,57 @@ app.factory('posts', [function(){
       {title: 'post 5', upvotes: 5, comments:[]}
     ]
   };
+  obj.getAll = function() {
+    return $http.get('/posts').success(function(data){
+      angular.copy(data, obj.posts);
+      //angular.copy() creates a deep copy of the returned data. This ensures that the $scope.posts variable in MainCtrl will also be updated, ensuring the new values are reflected in our view
+      //it copies the data pulled from the DB into the Angular model/service
+    })
+  }
+  obj.create = function(post){
+    return $http.post('/posts', post).success(function(data){
+      obj.posts.push(data);
+      //grab the post that was just saved to the DB in the post call and add that to the angular model/service
+    })
+  }
+  obj.upvote = function(post){
+    return $http.put('/posts/' + post._id + '/upvote').success(function(data){
+      post.upvotes += 1;
+    })
+  }
+  obj.getOne = function(id) {
+    return $http.get('/posts/' + id).then(function(res){
+      return res.data;
+    })
+  }
+  obj.addComment = function(id, comment){
+    return $http.post('/posts/' + id + '/comments', comment);
+  }
+  obj.upvoteComment = function(post, comment) {
+    return $http.put('/posts/' + post._id + '/comments/' + comment._id + '/upvote').success(function(data){
+      comment.upvotes += 1;
+    })
+  }
   return obj
 }])
 
 app.controller('PostsCtrl', [
   '$scope',
-  '$stateParams',
   'posts', //This is called injecting the posts service (from our factory above). It is equivalent to obj
-  function($scope, $stateParams, posts){
-    $scope.post = posts.posts[$stateParams.id] //= service.arrayName
+  'post', //The individual post
+  function($scope, posts, post){
+    //$scope.post = posts.posts[$stateParams.id] //= service.arrayName
+    $scope.post = post;
     $scope.incrementUpvotes = function(comment){
-      comment.upvotes++
+      posts.upvoteComment(post, comment)
     }
     $scope.addComment = function(){
-      if($scope.body || $scope.body === '') {return}
-      $scope.post.comments.push({
-        author: 'user',
+      if(!$scope.body || $scope.body === '') {return}
+      posts.addComment(post._id, {
         body: $scope.body,
-        upvotes: 0
+        author: 'user'
+      }).success(function(comment){
+        $scope.post.comments.push(comment);
       });
       $scope.body = '';
     }
@@ -71,20 +115,15 @@ app.controller('MainCtrl', [
     /*any change or modification made to $scope.posts will be stored in the service and immediately accessible by any other module that injects the posts service.*/
     $scope.addPost = function(){
       if(!$scope.title || $scope.title ==='') {return}
-      $scope.posts.push({
-        title:$scope.title,
-        link:$scope.link,
-        upvotes:0,
-        comments: [
-          {author: "Joe", body: "Cool post!", upvotes:0 },
-          {author: "Bob", body: "Great idea  but everything is wrong!", upvotes: 0}
-        ]
+      posts.create({
+        title: $scope.title,
+        link: $scope.link
       });
       $scope.title=''
       $scope.link=''
     }
     $scope.incrementUpvotes = function(post){
-      post.upvotes++
+      posts.upvote(post)
 
     }
   },

@@ -7,10 +7,10 @@ var PostSchema = new mongoose.Schema({
   comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}]
 })
 
-PostSchema.methods.upvote = function(cb){
-  this.upvote += 1;
-  console.log("cb =", cb);
-  this.save(cb);
+PostSchema.methods.upvote = function(callback){
+  this.upvotes += 1;
+  console.log("cb =", callback);
+  this.save(callback);
 }
 
 

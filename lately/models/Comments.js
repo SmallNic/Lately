@@ -10,10 +10,10 @@ var CommentSchema = new mongoose.Schema({
 //The ref property tells Mongoose what type of object the ID references and enables us to retrieve both items simultaneously
 
 
-CommentSchema.methods.upvote = function(cb){
-  this.upvote += 1;
-  console.log("cb =", cb);
-  this.save(cb);
+CommentSchema.methods.upvote = function(callback){
+  this.upvotes += 1;
+  console.log("cb =", callback);
+  this.save(callback);
 }
 
 mongoose.model('Comment', CommentSchema);

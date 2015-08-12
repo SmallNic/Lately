@@ -41,13 +41,13 @@
               <a ng-show="post.link" href="http://{{post.link}}">{{post.title}}</a>
               <span ng-hide="post.link"> {{post.title}} </span>
 
-              <span><a href="#/posts/{{$index}}">Comments</a></span>
+              <span><a href="#/posts/{{post._id}}">Comments</a></span>
               Upvotes: {{post.upvotes}}
             </div>
           </div>
         </div>
 
-      </div> //<!-- ends onepcssgrid-1200 -->
+      </div> <!-- ends onepcssgrid-1200 -->
 
     </script>
 
