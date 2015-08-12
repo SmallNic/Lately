@@ -44,17 +44,17 @@ app.factory('posts', [function(){
 app.controller('PostsCtrl', [
   '$scope',
   '$stateParams',
-  'posts',
+  'posts', //This is called injecting the posts service (from our factory above). It is equivalent to obj
   function($scope, $stateParams, posts){
-    $scope.post = posts.posts[$stateParams.id]
+    $scope.post = posts.posts[$stateParams.id] //= service.arrayName
     $scope.incrementUpvotes = function(comment){
       comment.upvotes++
     }
     $scope.addComment = function(){
-      if($scope.body === '') {return}
+      if($scope.body || $scope.body === '') {return}
       $scope.post.comments.push({
-        body: $scope.body,
         author: 'user',
+        body: $scope.body,
         upvotes: 0
       });
       $scope.body = '';
